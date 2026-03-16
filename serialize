@@ -1,0 +1,39 @@
+/////////////////////////////////////////////////////////////////////////////////////////
+
+json_rpc_server.js
+/////////////////////////////////////////////////////////////////////////////////////////
+
+const jayson = require('jayson');
+
+// 1. สร้าง Service (ฟังก์ชันต่างๆ)
+const server = jayson.server({
+  // ฟังก์ชันบวกเลข
+  add: function(args, callback) {
+    callback(null, args[0] + args[1]);
+  },
+  // ฟังก์ชันทักทาย
+  greet: function(args, callback) {
+    callback(null, `สวัสดีคุณ ${args.name}!`);
+  }
+});
+
+// 2. เปิดเซิร์ฟเวอร์ที่พอร์ต 3000
+server.http().listen(3000, () => {
+  console.log('✅ JSON-RPC Server รันแล้วที่พอร์ต 3000');
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////
+json_rpc_client.js
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+const jayson = require('jayson');
+
+// 1. ชี้ไปที่ Server ของเรา
+const client = jayson.client.http('http://localhost:3000');
+
+// 2. เรียกใช้ฟังก์ชัน 'greet'
+client.request('greet', { name: 'สมชาย' }, function(err, response) {
+  if (err) throw err;
+  console.log('ผลลัพธ์จาก Server:', response.result); // ผลลัพธ์: สวัสดีคุณ สมชาย!
+});
